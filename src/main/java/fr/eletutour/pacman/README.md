@@ -1,4 +1,4 @@
 # PacMan
 <div align="center">
-    <img width="401" alt="image" src="https://github.com/user-attachments/assets/5fed113c-0352-494b-b885-731e9d597d43" />
+    <img width="401" alt="image" src="https://github.com/user-attachments/assets/3c7aac0f-f750-464f-9ba9-b5e35763a884" />
 </div>
