@@ -28,5 +28,5 @@ Ce projet est une implémentation du jeu classique Space Invaders en Java utilis
   * Invaders avec design détaillé (corps, antennes, yeux, pattes).
   * Vaisseau joueur avec cockpit visuel.
   * Projectiles différenciés (blancs pour le joueur, jaunes pour les ennemis).
-* Game Over :
+* **Game Over** :
   * Écran de fin avec options pour redémarrer (R) ou quitter (Q).
