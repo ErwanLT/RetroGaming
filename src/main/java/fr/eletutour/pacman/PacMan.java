@@ -2,24 +2,20 @@ package fr.eletutour.pacman;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class PacMan extends JFrame {
     private static final int TILE_SIZE = 20;
     private static final int GAME_WIDTH = 400;
-    private static final int GAME_HEIGHT = 450;
+    private static final int GAME_HEIGHT = 430;
     private static final int INFO_HEIGHT = 30;
 
     public PacMan() {
         setTitle("Pac-Man");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-
         setLayout(new BorderLayout());
 
         InfoPanel infoPanel = new InfoPanel();
@@ -28,7 +24,6 @@ public class PacMan extends JFrame {
         GamePanel gamePanel = new GamePanel(infoPanel);
         add(gamePanel, BorderLayout.CENTER);
 
-        // Taille totale de la fenêtre : jeu + infos
         setSize(GAME_WIDTH, GAME_HEIGHT + INFO_HEIGHT);
         setVisible(true);
     }
@@ -64,11 +59,11 @@ public class PacMan extends JFrame {
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                 {1,2,2,2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,2,1},
                 {1,2,1,1,1,1,2,1,2,1,1,2,1,2,1,1,1,1,2,1},
-                {1,2,1,0,0,1,2,1,2,1,1,2,1,2,1,0,0,1,2,1},
-                {1,2,1,1,1,1,2,1,2,1,1,2,1,2,1,1,1,1,2,1},
+                {1,2,1,0,0,1,2,1,2,2,2,2,1,2,1,0,0,1,2,1},
+                {1,4,1,1,1,1,2,1,1,1,1,1,1,2,1,1,1,1,4,1},
                 {1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1},
                 {1,2,1,1,1,1,2,1,1,1,1,1,1,2,1,1,1,1,2,1},
-                {1,2,1,2,2,2,2,1,2,0,0,2,1,2,2,2,2,1,2,1},
+                {1,2,1,2,2,2,2,1,2,2,2,2,1,2,2,2,2,1,2,1},
                 {1,2,1,1,1,1,2,1,1,0,0,1,1,2,1,1,1,1,2,1},
                 {1,2,2,2,2,1,2,0,0,0,0,0,0,2,1,2,2,2,2,1},
                 {1,1,1,1,2,1,2,1,1,0,0,1,1,2,1,2,1,1,1,1},
@@ -80,7 +75,7 @@ public class PacMan extends JFrame {
                 {1,2,1,1,2,1,1,1,1,1,1,1,1,1,1,2,1,1,2,1},
                 {1,2,2,2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,2,1},
                 {1,2,1,1,1,1,1,1,2,1,1,2,1,1,1,1,1,1,2,1},
-                {1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1},
+                {1,4,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,4,1},
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
         };
 
@@ -98,35 +93,53 @@ public class PacMan extends JFrame {
         private final InfoPanel infoPanel;
         private String currentFruitEmoji;
         private final String[] fruitEmojis = {"🍒", "🍓", "🍎", "🍌", "🍊"};
-        private final String[] ghostEmojis = {"👻", "💀"}; // Liste d'emojis pour les fantômes
+        private boolean ghostsVulnerable = false;
+        private int vulnerableTimer = 0;
 
         class Ghost {
             int x, y;
-            String emoji; // Emoji spécifique pour ce fantôme
+            String emoji;
+            private static final String NORMAL_EMOJI = "👻";
+            private static final String VULNERABLE_EMOJI = "💀";
 
             Ghost(int x, int y) {
                 this.x = x;
                 this.y = y;
-                this.emoji = ghostEmojis[rand.nextInt(ghostEmojis.length)]; // Choix aléatoire à la création
+                this.emoji = NORMAL_EMOJI; // Émoji par défaut
+            }
+
+            void setVulnerable(boolean vulnerable) {
+                this.emoji = vulnerable ? VULNERABLE_EMOJI : NORMAL_EMOJI;
             }
 
             void move() {
-                int dx = Integer.compare(pacX, x);
-                int dy = Integer.compare(pacY, y);
-
-                if (rand.nextInt(100) < 70) {
+                if (ghostsVulnerable) {
+                    // Fuir Pac-Man
+                    int dx = Integer.compare(pacX, x) * -1;
+                    int dy = Integer.compare(pacY, y) * -1;
                     if (rand.nextBoolean() && canMove(x + dx, y)) {
                         x += dx;
                     } else if (canMove(x, y + dy)) {
                         y += dy;
                     }
                 } else {
-                    int direction = rand.nextInt(4);
-                    switch(direction) {
-                        case 0: if (canMove(x, y-1)) y--; break;
-                        case 1: if (canMove(x, y+1)) y++; break;
-                        case 2: if (canMove(x-1, y)) x--; break;
-                        case 3: if (canMove(x+1, y)) x++; break;
+                    // Poursuivre Pac-Man
+                    int dx = Integer.compare(pacX, x);
+                    int dy = Integer.compare(pacY, y);
+                    if (rand.nextInt(100) < 70) {
+                        if (rand.nextBoolean() && canMove(x + dx, y)) {
+                            x += dx;
+                        } else if (canMove(x, y + dy)) {
+                            y += dy;
+                        }
+                    } else {
+                        int direction = rand.nextInt(4);
+                        switch (direction) {
+                            case 0: if (canMove(x, y-1)) y--; break;
+                            case 1: if (canMove(x, y+1)) y++; break;
+                            case 2: if (canMove(x-1, y)) x--; break;
+                            case 3: if (canMove(x+1, y)) x++; break;
+                        }
                     }
                 }
             }
@@ -165,7 +178,15 @@ public class PacMan extends JFrame {
                     }
                     updateFruit();
                     checkCollision();
-                    checkLevelComplete();
+                    if (ghostsVulnerable) {
+                        vulnerableTimer--;
+                        if (vulnerableTimer <= 0) {
+                            ghostsVulnerable = false;
+                            for (Ghost ghost : ghosts) {
+                                ghost.setVulnerable(false); // Retour à l'émoji normal
+                            }
+                        }
+                    }
                     repaint();
                 }
             });
@@ -203,6 +224,15 @@ public class PacMan extends JFrame {
                     fruitY = -1;
                     currentFruitEmoji = null;
                     infoPanel.update(score, lives);
+                } else if (maze[pacY][pacX] == 4) {
+                    score += 50;
+                    maze[pacY][pacX] = 0;
+                    ghostsVulnerable = true;
+                    vulnerableTimer = 30; // 6 secondes
+                    for (Ghost ghost : ghosts) {
+                        ghost.setVulnerable(true); // Passe à 💀
+                    }
+                    infoPanel.update(score, lives);
                 }
             }
         }
@@ -221,18 +251,25 @@ public class PacMan extends JFrame {
         }
 
         private void checkCollision() {
-            for (Ghost ghost : ghosts) {
+            for (int i = ghosts.size() - 1; i >= 0; i--) {
+                Ghost ghost = ghosts.get(i);
                 if (ghost.x == pacX && ghost.y == pacY) {
-                    lives--;
-                    infoPanel.update(score, lives);
-                    if (lives <= 0) {
-                        JOptionPane.showMessageDialog(this, "Game Over! Score: " + score);
-                        System.exit(0);
+                    if (ghostsVulnerable) {
+                        score += 200;
+                        ghosts.remove(i);
+                        infoPanel.update(score, lives);
                     } else {
-                        pacX = 9;
-                        pacY = 15;
-                        ghost.x = 9 + (ghosts.indexOf(ghost) % 2); // Répartit les fantômes
-                        ghost.y = 9;
+                        lives--;
+                        infoPanel.update(score, lives);
+                        if (lives <= 0) {
+                            JOptionPane.showMessageDialog(this, "Game Over! Score: " + score);
+                            System.exit(0);
+                        } else {
+                            pacX = 9;
+                            pacY = 15;
+                            ghost.x = 9 + (ghosts.indexOf(ghost) % 2);
+                            ghost.y = 9;
+                        }
                     }
                 }
             }
@@ -242,7 +279,7 @@ public class PacMan extends JFrame {
             boolean pointsLeft = false;
             for (int[] ints : maze) {
                 for (int anInt : ints) {
-                    if (anInt == 2) {
+                    if (anInt == 2 || anInt == 4) {
                         pointsLeft = true;
                         break;
                     }
@@ -265,12 +302,12 @@ public class PacMan extends JFrame {
             ghosts.clear();
             ghosts.add(new Ghost(9, 9));
             ghosts.add(new Ghost(10, 9));
-            //ghosts.add(new Ghost(8, 9));
-            //ghosts.add(new Ghost(11, 9));
             fruitX = -1;
             fruitY = -1;
             currentFruitEmoji = null;
             fruitTimer = 0;
+            ghostsVulnerable = false;
+            vulnerableTimer = 0;
             infoPanel.update(score, lives);
         }
 
@@ -290,12 +327,15 @@ public class PacMan extends JFrame {
                         g.setColor(Color.RED);
                         g.setFont(new Font("Arial", Font.PLAIN, TILE_SIZE));
                         g.drawString(currentFruitEmoji, x * TILE_SIZE, (y + 1) * TILE_SIZE);
+                    } else if (maze[y][x] == 4) {
+                        g.setColor(Color.WHITE);
+                        g.fillOval(x * TILE_SIZE + 6, y * TILE_SIZE + 6, 8, 8);
                     }
                 }
             }
 
             for (Ghost ghost : ghosts) {
-                g.setColor(Color.WHITE); // Couleur par défaut pour les emojis fantômes
+                g.setColor(Color.WHITE);
                 g.setFont(new Font("Arial", Font.PLAIN, TILE_SIZE));
                 g.drawString(ghost.emoji, ghost.x * TILE_SIZE, (ghost.y + 1) * TILE_SIZE);
             }
