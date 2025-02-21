@@ -43,8 +43,8 @@ public class Pong extends JPanel implements ActionListener {
             @Override
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
-                    case KeyEvent.VK_W: up1 = true; break;
-                    case KeyEvent.VK_S: down1 = true; break;
+                    case KeyEvent.VK_S: up1 = true; break;
+                    case KeyEvent.VK_W: down1 = true; break;
                     case KeyEvent.VK_UP: up2 = true; break;
                     case KeyEvent.VK_DOWN: down2 = true; break;
                 }
@@ -53,8 +53,8 @@ public class Pong extends JPanel implements ActionListener {
             @Override
             public void keyReleased(KeyEvent e) {
                 switch (e.getKeyCode()) {
-                    case KeyEvent.VK_W: up1 = false; break;
-                    case KeyEvent.VK_S: down1 = false; break;
+                    case KeyEvent.VK_S: up1 = false; break;
+                    case KeyEvent.VK_W: down1 = false; break;
                     case KeyEvent.VK_UP: up2 = false; break;
                     case KeyEvent.VK_DOWN: down2 = false; break;
                 }
