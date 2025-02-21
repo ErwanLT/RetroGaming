@@ -9,7 +9,7 @@ import java.util.Random;
 public class PacMan extends JFrame {
     private static final int TILE_SIZE = 20;
     private static final int GAME_WIDTH = 400;
-    private static final int GAME_HEIGHT = 430;
+    private static final int GAME_HEIGHT = 420; // Corrigé à 420 pour 21 lignes
     private static final int INFO_HEIGHT = 30;
 
     public PacMan() {
@@ -99,11 +99,11 @@ public class PacMan extends JFrame {
         class Ghost {
             int x, y;
             String emoji;
-            boolean isDead = false; // État pour indiquer si le fantôme est "mort"
-            int respawnTimer = 0; // Délai avant réapparition
+            boolean isDead = false;
+            int respawnTimer = 0;
             private static final String NORMAL_EMOJI = "👻";
             private static final String VULNERABLE_EMOJI = "💀";
-            private static final int RESPAWN_DELAY = 15; // 3 secondes (15 * 200ms)
+            private static final int RESPAWN_DELAY = 15;
 
             Ghost(int x, int y) {
                 this.x = x;
@@ -122,7 +122,7 @@ public class PacMan extends JFrame {
                     respawnTimer--;
                     if (respawnTimer <= 0) {
                         isDead = false;
-                        setVulnerable(ghostsVulnerable); // Applique l'état actuel
+                        setVulnerable(ghostsVulnerable);
                     }
                     return;
                 }
@@ -159,9 +159,9 @@ public class PacMan extends JFrame {
             void die() {
                 isDead = true;
                 respawnTimer = RESPAWN_DELAY;
-                x = 9 + (ghosts.indexOf(this) % 2); // Retour à la cage
+                x = 9 + (ghosts.indexOf(this) % 2);
                 y = 9;
-                emoji = NORMAL_EMOJI; // Revient à l'état normal immédiatement
+                emoji = NORMAL_EMOJI;
             }
 
             boolean canMove(int newX, int newY) {
@@ -198,6 +198,7 @@ public class PacMan extends JFrame {
                     }
                     updateFruit();
                     checkCollision();
+                    checkLevelComplete(); // Ajouté ici pour s'assurer qu'il est appelé
                     if (ghostsVulnerable) {
                         vulnerableTimer--;
                         if (vulnerableTimer <= 0) {
@@ -279,7 +280,7 @@ public class PacMan extends JFrame {
                 if (ghost.x == pacX && ghost.y == pacY && !ghost.isDead) {
                     if (ghostsVulnerable) {
                         score += 200;
-                        ghost.die(); // Le fantôme "meurt" et retourne à la cage
+                        ghost.die();
                         infoPanel.update(score, lives);
                     } else {
                         lives--;
@@ -300,9 +301,9 @@ public class PacMan extends JFrame {
 
         private void checkLevelComplete() {
             boolean pointsLeft = false;
-            for (int[] ints : maze) {
-                for (int anInt : ints) {
-                    if (anInt == 2 || anInt == 4) {
+            for (int y = 0; y < maze.length; y++) {
+                for (int x = 0; x < maze[y].length; x++) {
+                    if (maze[y][x] == 2 || maze[y][x] == 4) {
                         pointsLeft = true;
                         break;
                     }
@@ -358,7 +359,7 @@ public class PacMan extends JFrame {
             }
 
             for (Ghost ghost : ghosts) {
-                if (!ghost.isDead) { // N'affiche que les fantômes vivants
+                if (!ghost.isDead) {
                     g.setColor(Color.WHITE);
                     g.setFont(new Font("Arial", Font.PLAIN, TILE_SIZE));
                     g.drawString(ghost.emoji, ghost.x * TILE_SIZE, (ghost.y + 1) * TILE_SIZE);
