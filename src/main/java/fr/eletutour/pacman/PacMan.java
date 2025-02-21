@@ -99,22 +99,35 @@ public class PacMan extends JFrame {
         class Ghost {
             int x, y;
             String emoji;
+            boolean isDead = false; // État pour indiquer si le fantôme est "mort"
+            int respawnTimer = 0; // Délai avant réapparition
             private static final String NORMAL_EMOJI = "👻";
             private static final String VULNERABLE_EMOJI = "💀";
+            private static final int RESPAWN_DELAY = 15; // 3 secondes (15 * 200ms)
 
             Ghost(int x, int y) {
                 this.x = x;
                 this.y = y;
-                this.emoji = NORMAL_EMOJI; // Émoji par défaut
+                this.emoji = NORMAL_EMOJI;
             }
 
             void setVulnerable(boolean vulnerable) {
-                this.emoji = vulnerable ? VULNERABLE_EMOJI : NORMAL_EMOJI;
+                if (!isDead) {
+                    this.emoji = vulnerable ? VULNERABLE_EMOJI : NORMAL_EMOJI;
+                }
             }
 
             void move() {
+                if (isDead) {
+                    respawnTimer--;
+                    if (respawnTimer <= 0) {
+                        isDead = false;
+                        setVulnerable(ghostsVulnerable); // Applique l'état actuel
+                    }
+                    return;
+                }
+
                 if (ghostsVulnerable) {
-                    // Fuir Pac-Man
                     int dx = Integer.compare(pacX, x) * -1;
                     int dy = Integer.compare(pacY, y) * -1;
                     if (rand.nextBoolean() && canMove(x + dx, y)) {
@@ -123,7 +136,6 @@ public class PacMan extends JFrame {
                         y += dy;
                     }
                 } else {
-                    // Poursuivre Pac-Man
                     int dx = Integer.compare(pacX, x);
                     int dy = Integer.compare(pacY, y);
                     if (rand.nextInt(100) < 70) {
@@ -142,6 +154,14 @@ public class PacMan extends JFrame {
                         }
                     }
                 }
+            }
+
+            void die() {
+                isDead = true;
+                respawnTimer = RESPAWN_DELAY;
+                x = 9 + (ghosts.indexOf(this) % 2); // Retour à la cage
+                y = 9;
+                emoji = NORMAL_EMOJI; // Revient à l'état normal immédiatement
             }
 
             boolean canMove(int newX, int newY) {
@@ -183,7 +203,9 @@ public class PacMan extends JFrame {
                         if (vulnerableTimer <= 0) {
                             ghostsVulnerable = false;
                             for (Ghost ghost : ghosts) {
-                                ghost.setVulnerable(false); // Retour à l'émoji normal
+                                if (!ghost.isDead) {
+                                    ghost.setVulnerable(false);
+                                }
                             }
                         }
                     }
@@ -228,9 +250,11 @@ public class PacMan extends JFrame {
                     score += 50;
                     maze[pacY][pacX] = 0;
                     ghostsVulnerable = true;
-                    vulnerableTimer = 30; // 6 secondes
+                    vulnerableTimer = 30;
                     for (Ghost ghost : ghosts) {
-                        ghost.setVulnerable(true); // Passe à 💀
+                        if (!ghost.isDead) {
+                            ghost.setVulnerable(true);
+                        }
                     }
                     infoPanel.update(score, lives);
                 }
@@ -251,12 +275,11 @@ public class PacMan extends JFrame {
         }
 
         private void checkCollision() {
-            for (int i = ghosts.size() - 1; i >= 0; i--) {
-                Ghost ghost = ghosts.get(i);
-                if (ghost.x == pacX && ghost.y == pacY) {
+            for (Ghost ghost : ghosts) {
+                if (ghost.x == pacX && ghost.y == pacY && !ghost.isDead) {
                     if (ghostsVulnerable) {
                         score += 200;
-                        ghosts.remove(i);
+                        ghost.die(); // Le fantôme "meurt" et retourne à la cage
                         infoPanel.update(score, lives);
                     } else {
                         lives--;
@@ -335,9 +358,11 @@ public class PacMan extends JFrame {
             }
 
             for (Ghost ghost : ghosts) {
-                g.setColor(Color.WHITE);
-                g.setFont(new Font("Arial", Font.PLAIN, TILE_SIZE));
-                g.drawString(ghost.emoji, ghost.x * TILE_SIZE, (ghost.y + 1) * TILE_SIZE);
+                if (!ghost.isDead) { // N'affiche que les fantômes vivants
+                    g.setColor(Color.WHITE);
+                    g.setFont(new Font("Arial", Font.PLAIN, TILE_SIZE));
+                    g.drawString(ghost.emoji, ghost.x * TILE_SIZE, (ghost.y + 1) * TILE_SIZE);
+                }
             }
 
             g.setColor(Color.YELLOW);
