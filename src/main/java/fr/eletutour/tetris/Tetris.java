@@ -91,8 +91,8 @@ public class Tetris extends JPanel {
                 if (gameOver) return;
 
                 switch (e.getKeyCode()) {
-                    case KeyEvent.VK_LEFT -> movePiece(-1, 0);
-                    case KeyEvent.VK_RIGHT -> movePiece(1, 0);
+                    case KeyEvent.VK_LEFT -> movePiece(-1);
+                    case KeyEvent.VK_RIGHT -> movePiece(1);
                     case KeyEvent.VK_DOWN -> moveDown();
                     case KeyEvent.VK_UP -> currentPiece.rotate();
                 }
@@ -143,9 +143,9 @@ public class Tetris extends JPanel {
         return true;
     }
 
-    private void movePiece(int dx, int dy) {
-        if (isValidPosition(currentPiece.shape, currentPiece.x + dx, currentPiece.y + dy)) {
-            currentPiece.move(dx, dy);
+    private void movePiece(int dx) {
+        if (isValidPosition(currentPiece.shape, currentPiece.x + dx, currentPiece.y)) {
+            currentPiece.move(dx, 0);
         }
     }
 
