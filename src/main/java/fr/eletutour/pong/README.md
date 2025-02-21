@@ -11,6 +11,6 @@ Un jeu de tennis de table pour deux joueurs où une balle rebondit entre deux ra
   * Joueur 1 (gauche) : **S** (haut), **W** (bas)
   * Joueur 2 (droite) : **Flèche haut**, **Flèche bas**
 * **Règles** :
-* La balle rebondit sur les raquettes et les bords supérieur/inférieur.
-* Un point est marqué si la balle dépasse une raquette.
-* Le score est affiché en haut de l'écran.
+  * La balle rebondit sur les raquettes et les bords supérieur/inférieur.
+  * Un point est marqué si la balle dépasse une raquette.
+  * Le score est affiché en haut de l'écran.
