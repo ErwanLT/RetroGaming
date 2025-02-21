@@ -265,6 +265,8 @@ public class PacMan extends JFrame {
             ghosts.clear();
             ghosts.add(new Ghost(9, 9));
             ghosts.add(new Ghost(10, 9));
+            ghosts.add(new Ghost(8, 9));
+            ghosts.add(new Ghost(11, 9));
             fruitX = -1;
             fruitY = -1;
             currentFruitEmoji = null;
