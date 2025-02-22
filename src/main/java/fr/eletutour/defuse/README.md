@@ -1,4 +1,7 @@
 # Bomb Defusal Game
+<div align="center">
+  <img width="597" alt="image" src="https://github.com/user-attachments/assets/ee850438-c3a5-4895-8a9b-9b5a1916ff4c" />
+</div>
 
 ## Description
 Le *Bomb Defusal Game* est un jeu de désamorçage de bombe écrit en Java. Le joueur dispose de 60 secondes pour couper 3 fils corrects parmi 15 fils (5 bleus, 5 rouges, 5 jaunes) disposés dans une grille 5x3. Chaque ligne de la grille contient un fil bleu, un rouge et un jaune, dans cet ordre. Si le joueur coupe un fil correct, une LED verte s’allume ; sinon, une LED rouge s’allume. Le jeu se termine par une victoire si les 3 fils corrects sont coupés, ou par une défaite (explosion) si 3 fils incorrects sont coupés ou si le temps est écoulé. Un bouton "Indice" permet de voir les couleurs des fils corrects (sans préciser lesquels), et une pop-up à la fin du jeu indique les fils corrects avec leur position dans la grille.
