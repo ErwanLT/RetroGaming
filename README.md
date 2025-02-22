@@ -6,3 +6,4 @@ Arcade games from the 80s and 90s in Java
 * [Space Invaders](src/main/java/fr/eletutour/spaceInvaders)
 * [Pong](src/main/java/fr/eletutour/pong)
 * [Asteroids](src/main/java/fr/eletutour/asteroids)
+* [Bomb Defusal Game](src/main/java/fr/eletutour/defuse)
