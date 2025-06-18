@@ -90,6 +90,10 @@ class Serpent:
                 pygame.draw.circle(surface, VERT, (x + TAILLE_CASE//2, y + TAILLE_CASE//2), TAILLE_CASE//2 - 1)
                 # Détail du corps (petit cercle plus foncé)
                 pygame.draw.circle(surface, (0, 200, 0), (x + TAILLE_CASE//2, y + TAILLE_CASE//2), TAILLE_CASE//2 - 3)
+                pygame.draw.circle(surface, (0, 150, 0), (x + TAILLE_CASE//2, y + TAILLE_CASE//2), TAILLE_CASE//2 - 5)
+                pygame.draw.circle(surface, (0, 100, 0), (x + TAILLE_CASE//2, y + TAILLE_CASE//2), TAILLE_CASE//2 - 7)
+                pygame.draw.circle(surface, (0, 50, 0), (x + TAILLE_CASE//2, y + TAILLE_CASE//2), TAILLE_CASE//2 - 9)
+                pygame.draw.circle(surface, (0, 5, 0), (x + TAILLE_CASE//2, y + TAILLE_CASE//2), TAILLE_CASE//2 - 11)
 
 class Nourriture:
     def __init__(self, serpent):
